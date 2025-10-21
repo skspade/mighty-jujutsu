@@ -41,6 +41,7 @@ export class TauriApp {
   private getDefaultBinaryPath(): string {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
+    // __dirname is tests/helpers, so go up twice to get to root
     const rootDir = resolve(__dirname, '../../');
     const targetDir = join(rootDir, 'src-tauri', 'target', 'debug');
 

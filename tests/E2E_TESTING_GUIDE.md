@@ -10,8 +10,8 @@ This document explains the challenges and solutions for end-to-end testing of Ta
 
 The Tauri application builds successfully in debug mode:
 - **Build command**: `pnpm tauri build --debug`
-- **Binary location**: `/Users/seanspade/WebstormProjects/mighty-jujutsu/mighty-jujutsu/src-tauri/target/debug/mighty-jujutsu`
-- **App bundle**: `/Users/seanspade/WebstormProjects/mighty-jujutsu/mighty-jujutsu/src-tauri/target/debug/bundle/macos/mighty-jujutsu.app`
+- **Binary location**: `/Users/seanspade/WebstormProjects/mighty-jujutsu/src-tauri/target/debug/mighty-jujutsu`
+- **App bundle**: `/Users/seanspade/WebstormProjects/mighty-jujutsu/src-tauri/target/debug/bundle/macos/mighty-jujutsu.app`
 - **Build time**: ~25 seconds (incremental builds)
 - **Bundle size**: 24MB
 
@@ -46,7 +46,6 @@ Test the React frontend independently using Vite's dev server:
 
 ```bash
 # Start Vite dev server
-cd mighty-jujutsu
 pnpm dev
 
 # In another terminal, run Playwright tests against localhost:1420
@@ -125,7 +124,6 @@ For now, manual testing remains the most practical approach on macOS:
 
 ```bash
 # Build and run the app
-cd mighty-jujutsu
 pnpm tauri build --debug
 open src-tauri/target/debug/bundle/macos/mighty-jujutsu.app
 

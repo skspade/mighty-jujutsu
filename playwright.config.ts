@@ -9,6 +9,7 @@ import { defineConfig } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
+  testIgnore: '**/wdio/**',
 
   // Tauri app startup can take time, especially on first run
   timeout: 60000,

@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Tauri v2 desktop application** with a React + TypeScript frontend. The project follows a dual-language architecture:
 
-- **Frontend (mighty-jujutsu/)**: React 19 + TypeScript + Vite
-  - Located in `mighty-jujutsu/src/`
+- **Frontend**: React 19 + TypeScript + Vite
+  - Located in `src/`
   - Uses Vite for dev server and bundling
   - TypeScript configured with strict mode enabled
 
-- **Backend (mighty-jujutsu/src-tauri/)**: Rust
+- **Backend**: Rust
   - Tauri v2 app with library crate structure (`mighty_jujutsu_lib`)
   - Entry point: `src-tauri/src/main.rs` calls `lib.rs::run()`
   - Tauri commands registered in `lib.rs` (example: `greet` command)
@@ -56,11 +56,9 @@ jj metaedit --update-author
 
 ## Development Commands
 
-All commands should be run from the **`mighty-jujutsu/`** directory (not the root):
+All commands should be run from the **root directory**:
 
 ```bash
-cd mighty-jujutsu
-
 # Development (runs Vite dev server + Tauri)
 pnpm dev
 
@@ -80,7 +78,7 @@ This project uses **pnpm** as specified in `tauri.conf.json` (see `beforeDevComm
 
 ## Key Configuration
 
-- **Tauri config**: `mighty-jujutsu/src-tauri/tauri.conf.json`
+- **Tauri config**: `src-tauri/tauri.conf.json`
   - Dev server runs on `localhost:1420`
   - Frontend dist outputs to `../dist`
 
@@ -88,7 +86,7 @@ This project uses **pnpm** as specified in `tauri.conf.json` (see `beforeDevComm
   - Do not use underscore prefixes for unused variables
   - Remove unused code entirely
 
-- **Vite config**: `mighty-jujutsu/vite.config.ts`
+- **Vite config**: `vite.config.ts`
   - Fixed port 1420 for Tauri compatibility
   - Ignores `src-tauri` directory from watch
 
@@ -115,10 +113,10 @@ The backend is organized into modular components:
 
 ### Rust Unit Tests
 
-Run all Rust unit tests from the `mighty-jujutsu/src-tauri` directory:
+Run all Rust unit tests from the `src-tauri` directory:
 
 ```bash
-cd mighty-jujutsu/src-tauri
+cd src-tauri
 cargo test
 ```
 
@@ -129,14 +127,12 @@ Each command module includes integration tests that verify jj command execution 
 The project uses Playwright to test the compiled Tauri app via Chrome DevTools Protocol.
 
 **Prerequisites:**
-- Build the app once: `cd mighty-jujutsu && pnpm tauri build --debug`
+- Build the app once: `pnpm tauri build --debug`
 - Install browsers: `pnpx playwright install chromium`
 
-**Run E2E tests** (from `mighty-jujutsu/` directory):
+**Run E2E tests** (from the root directory):
 
 ```bash
-cd mighty-jujutsu
-
 # Run all tests (headless)
 pnpm test:e2e
 
@@ -150,9 +146,9 @@ pnpm test:e2e:headed
 pnpm test:e2e:debug
 ```
 
-**Test location:** `mighty-jujutsu/tests/`
+**Test location:** `tests/`
 - Tests use a `TauriApp` helper class to launch and connect to the Tauri binary
-- See `mighty-jujutsu/tests/README.md` for comprehensive E2E testing guide
+- See `tests/README.md` for comprehensive E2E testing guide
 
 ## Adding Tauri Commands
 
