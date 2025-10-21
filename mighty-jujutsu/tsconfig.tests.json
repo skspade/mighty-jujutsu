@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node", "@playwright/test"],
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": "dist-tests"
+  },
+  "include": ["tests"]
+}
