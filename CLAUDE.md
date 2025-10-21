@@ -17,6 +17,43 @@ This is a **Tauri v2 desktop application** with a React + TypeScript frontend. T
   - Tauri commands registered in `lib.rs` (example: `greet` command)
   - Uses `tauri-plugin-opener` for external URL handling
 
+## Version Control
+
+This repository uses **jujutsu (jj)** for all version control operations. Jujutsu is configured in colocate mode, which means it works alongside git and maintains compatibility.
+
+**Configuration:**
+- User: skspade
+- Email: skspade@pm.me
+- Main bookmark: `main` (tracked from `main@origin`)
+
+**Common jj commands:**
+
+```bash
+# View current state
+jj status
+jj log
+
+# Create a new change
+jj new
+
+# Describe the current change
+jj describe -m "Your commit message"
+
+# Track remote bookmarks
+jj bookmark track <bookmark>@origin
+
+# Push changes
+jj git push
+
+# Pull changes
+jj git fetch
+
+# Update working copy author
+jj metaedit --update-author
+```
+
+**Note:** Always use `jj` commands instead of `git` commands for version control operations in this repository.
+
 ## Development Commands
 
 All commands should be run from the **`mighty-jujutsu/`** directory (not the root):
