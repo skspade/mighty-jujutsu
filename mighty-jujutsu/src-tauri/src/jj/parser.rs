@@ -1,5 +1,5 @@
 use crate::error::{JJError, JJResult};
-use crate::models::{Author, Commit};
+use crate::models::{Author, Bookmark, Commit};
 use serde_json::Value;
 
 pub struct JJParser;
@@ -70,5 +70,35 @@ impl JJParser {
                     .collect()
             })
             .ok_or_else(|| JJError::ParseError(format!("Missing or invalid array: {}", key)))
+    }
+
+    pub fn parse_bookmarks(json: Value) -> JJResult<Vec<Bookmark>> {
+        let bookmarks_array = json
+            .as_array()
+            .ok_or_else(|| JJError::ParseError("Expected array of bookmarks".to_string()))?;
+
+        bookmarks_array
+            .iter()
+            .map(|bookmark_val| Self::parse_bookmark(bookmark_val))
+            .collect()
+    }
+
+    fn parse_bookmark(val: &Value) -> JJResult<Bookmark> {
+        let obj = val
+            .as_object()
+            .ok_or_else(|| JJError::ParseError("Expected bookmark object".to_string()))?;
+
+        Ok(Bookmark {
+            name: Self::get_string(obj, "name")?,
+            target: Self::get_string(obj, "target")?,
+            is_tracking: obj
+                .get("tracking")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false),
+            remote: obj
+                .get("remote")
+                .and_then(|v| v.as_str())
+                .map(|s| s.to_string()),
+        })
     }
 }

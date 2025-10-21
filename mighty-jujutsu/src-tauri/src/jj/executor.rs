@@ -80,6 +80,63 @@ impl JJExecutor {
             .execute(&["init", path.as_ref().to_str().unwrap()])
             .await
     }
+
+    pub async fn new_change(&self, message: Option<&str>) -> JJResult<String> {
+        let mut args = vec!["new"];
+        if let Some(msg) = message {
+            args.push("-m");
+            args.push(msg);
+        }
+        self.execute(&args).await
+    }
+
+    pub async fn describe(&self, message: &str, change_id: Option<&str>) -> JJResult<String> {
+        let mut args = vec!["describe", "-m", message];
+        if let Some(id) = change_id {
+            args.push("-r");
+            args.push(id);
+        }
+        self.execute(&args).await
+    }
+
+    pub async fn bookmark_list(&self) -> JJResult<serde_json::Value> {
+        self.execute_json(&["bookmark", "list", "-T", "json"]).await
+    }
+
+    pub async fn bookmark_create(&self, name: &str, revision: Option<&str>) -> JJResult<String> {
+        let mut args = vec!["bookmark", "create", name];
+        if let Some(rev) = revision {
+            args.push("-r");
+            args.push(rev);
+        }
+        self.execute(&args).await
+    }
+
+    pub async fn bookmark_track(&self, name: &str) -> JJResult<String> {
+        self.execute(&["bookmark", "track", name]).await
+    }
+
+    pub async fn bookmark_delete(&self, name: &str) -> JJResult<String> {
+        self.execute(&["bookmark", "delete", name]).await
+    }
+
+    pub async fn git_fetch(&self, remote: Option<&str>) -> JJResult<String> {
+        let mut args = vec!["git", "fetch"];
+        if let Some(r) = remote {
+            args.push("--remote");
+            args.push(r);
+        }
+        self.execute(&args).await
+    }
+
+    pub async fn git_push(&self, bookmark: Option<&str>) -> JJResult<String> {
+        let mut args = vec!["git", "push"];
+        if let Some(b) = bookmark {
+            args.push("--bookmark");
+            args.push(b);
+        }
+        self.execute(&args).await
+    }
 }
 
 impl Default for JJExecutor {
