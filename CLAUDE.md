@@ -92,10 +92,75 @@ This project uses **pnpm** as specified in `tauri.conf.json` (see `beforeDevComm
   - Fixed port 1420 for Tauri compatibility
   - Ignores `src-tauri` directory from watch
 
+## Rust Backend Architecture
+
+The backend is organized into modular components:
+
+- **JJ Integration Layer** (`src-tauri/src/jj/`):
+  - `JJExecutor`: Executes jj CLI commands asynchronously via tokio
+  - `JJParser`: Parses jj command output into structured data
+
+- **Commands** (`src-tauri/src/commands/`): Tauri commands organized by domain
+  - `repository.rs`: Basic repo operations (status, init, diff)
+  - `history.rs`: Log and history viewing
+  - `changes.rs`: Creating and describing changes
+  - `bookmarks.rs`: Bookmark management
+  - `remote.rs`: Git fetch/push operations
+
+- **Models** (`src-tauri/src/models/`): Serde-serializable types representing jj concepts (Repository, Commit, Change, Bookmark)
+
+- **Error Handling** (`src-tauri/src/error.rs`): Custom error types using thiserror
+
+## Testing
+
+### Rust Unit Tests
+
+Run all Rust unit tests from the `mighty-jujutsu/src-tauri` directory:
+
+```bash
+cd mighty-jujutsu/src-tauri
+cargo test
+```
+
+Each command module includes integration tests that verify jj command execution and parsing.
+
+### End-to-End Tests (Playwright)
+
+The project uses Playwright to test the compiled Tauri app via Chrome DevTools Protocol.
+
+**Prerequisites:**
+- Build the app once: `cd mighty-jujutsu && pnpm tauri build --debug`
+- Install browsers: `pnpx playwright install chromium`
+
+**Run E2E tests** (from `mighty-jujutsu/` directory):
+
+```bash
+cd mighty-jujutsu
+
+# Run all tests (headless)
+pnpm test:e2e
+
+# Run with Playwright UI (recommended for development)
+pnpm test:e2e:ui
+
+# Run in headed mode (see app window)
+pnpm test:e2e:headed
+
+# Debug tests with Playwright Inspector
+pnpm test:e2e:debug
+```
+
+**Test location:** `mighty-jujutsu/tests/`
+- Tests use a `TauriApp` helper class to launch and connect to the Tauri binary
+- See `mighty-jujutsu/tests/README.md` for comprehensive E2E testing guide
+
 ## Adding Tauri Commands
 
 To add new Rust backend commands callable from frontend:
 
-1. Add `#[tauri::command]` function in `src-tauri/src/lib.rs`
-2. Register in `invoke_handler` using `tauri::generate_handler![command_name]`
-3. Call from frontend using `@tauri-apps/api` invoke functions
+1. Create command function in appropriate module under `src-tauri/src/commands/`
+2. Add `#[tauri::command]` attribute and implement using `JJExecutor`
+3. Export from `commands/mod.rs` and import in `lib.rs`
+4. Register in `invoke_handler` using `tauri::generate_handler![command_name]`
+5. Add integration tests in the command module using `#[cfg(test)]`
+6. Call from frontend using `invoke()` from `@tauri-apps/api/core`
